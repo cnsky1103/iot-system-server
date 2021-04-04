@@ -1,5 +1,6 @@
 const express = require('express')
 const Router = express.Router()
+const User = require('../models/user')
 
 Router.get('/', (req, res) => {
     console.log(req.baseUrl)
@@ -10,7 +11,7 @@ Router.get('/', (req, res) => {
 })
 
 Router.post('/', (req, res) => {
-    console.log(req.body)
+    console.log({...req.body})
     res.json({
         status:"success"
     })

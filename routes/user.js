@@ -11,10 +11,25 @@ Router.get('/', (req, res) => {
 })
 
 Router.post('/', (req, res) => {
-    console.log({...req.body})
-    res.json({
-        status:"success"
+    console.log({ ...req.body })
+
+    User.find({
+        ...req.body
+    }).then(result => {
+        res.json(result)
+    }).catch(console.log)
+})
+
+Router.post('/register', (req, res) => {
+    console.log({ ...req.body })
+
+    const user = User({
+        ...req.body
     })
+
+    user.save()
+        .then((result) => { res.json(result) })
+        .catch(console.log)
 })
 
 module.exports = Router

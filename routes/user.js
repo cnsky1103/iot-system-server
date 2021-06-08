@@ -2,37 +2,83 @@ const express = require('express')
 const Router = express.Router()
 const User = require('../models/user')
 
-Router.post('/', (req, res) => {
-    console.log({ ...req.body })
 
-    User.find({
-        ...req.body
-    }).then(result => {
-        res.json(result)
-    }).catch(console.log)
+/**
+ * login
+ * @param req.body.username
+ * @param req.body.password
+ * */
+Router.post('/login', async (req, res) => {
+    accounts = await User.find({ "username": req.body.username });
+    if (accounts.length === 0) {
+        res.json({
+            code: 1,
+            error: "该用户不存在！"
+        })
+    } else {
+        accounts = accounts.filter(account => account.password === req.body.password)
+        if (accounts.length === 0) {
+            res.json({
+                code: 1,
+                error: "密码错误！"
+            })
+        } else {
+            res.json({
+                code: 0,
+                data: accounts
+            })
+        }
+    }
 })
 
+/** 
+ * register
+ * @param req.body.username
+ * @param req.body.password
+ * @param req.body.email
+ * */
 Router.post('/register', async (req, res) => {
-    console.log({ ...req.body })
-
     const user = User({
         ...req.body
     })
 
-    const result = await User.find({ "username": req.body.username })
+    usernames = await User.find({ "username": req.body.username })
+    emails = await User.find({ "email": req.body.email })
 
-    if (result.length > 0) {
+    if (usernames.length === 0 && emails.length === 0) {
         user.save()
-            .then((result) => { res.json(result) })
-            .catch(console.log)
+            .then((result) => {
+                res.json({
+                    code: 0,
+                    data: result
+                })
+            })
+            .catch(res.json({
+                code: 1,
+                error: "系统错误"
+            }))
     } else {
-        res.send({})
+        if (usernames.length !== 0) {
+            res.json({
+                code: 1,
+                error: "该用户名已存在！"
+            })
+        } else {
+            res.json({
+                code: 1,
+                error: "该邮箱已被注册！"
+            })
+        }
     }
 })
 
+/** 
+ * reset password
+ * @param req.body.username
+ * @param req.body.oldPassword
+ * @param req.body.newPassword
+ * */
 Router.post('/reset', async (req, res) => {
-    console.log({ ...req.body })
-
     const result = await User.find({ "username": req.body.username, "password": req.body.oldPassword })
 
     console.log(result);

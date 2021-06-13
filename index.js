@@ -1,6 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
+const client = require('./device/client')
 
 const app = express()
 
@@ -29,5 +30,6 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 app.use('/user', require('./routes/user'))
+app.use('/device', require('./routes/device'))
 
 app.listen(5000)

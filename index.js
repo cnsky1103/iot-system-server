@@ -7,7 +7,7 @@ const app = express()
 
 const dbURI = 'mongodb+srv://iotUser:iotMongo@cluster0.lgakf.mongodb.net/iot-system-db?retryWrites=true&w=majority'
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(res => { console.log("Connect to database") })
+    .then(res => { console.log("Connected to database") })
     .catch(console.log)
 
 app.all('*', function (req, res, next) {

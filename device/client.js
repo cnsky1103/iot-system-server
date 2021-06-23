@@ -19,7 +19,8 @@ client.on('message', async (topic, message) => {
         clientId: messageJSON.clientId,
         info: messageJSON.info,
         lat: messageJSON.lat,
-        lng: messageJSON.lng
+        lng: messageJSON.lng,
+        alert: messageJSON.alert
     })
 
     await m.save()
@@ -27,7 +28,7 @@ client.on('message', async (topic, message) => {
     await Device.updateOne({ "clientId": messageJSON.clientId }, {
         clientId: messageJSON.clientId,
         lat: messageJSON.lat,
-        lng: messageJSON.lng
+        lng: messageJSON.lng,
     }, { upsert: true, setDefaultsOnInsert: true })
 })
 

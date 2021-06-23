@@ -17,6 +17,10 @@ const messageSchema = new Schema({
     lng: {
         type: Number,
         required: true
+    },
+    alert: {
+        type: Number,
+        required: true
     }
 }, { timestamps: true })
 

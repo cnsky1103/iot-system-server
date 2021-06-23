@@ -3,9 +3,9 @@ const Router = express.Router()
 const Device = require('../models/device')
 const User = require('../models/user')
 const User_Device = require('../models/user_device')
+const Message = require('../models/message')
 
 /**
- * 
  * 
  */
 Router.get('/', async (req, res) => {
@@ -46,9 +46,20 @@ Router.post('/bind', async (req, res) => {
         clientId: req.body.clientId,
         name: req.body.name
     }, { upsert: true })
-    
+
     res.json({
         code: 0
+    })
+})
+
+/**
+ * 
+ */
+ Router.get('/allmessage', async (req, res) => {
+    const messages = await Message.find({}).sort({ "createdAt": -1 })
+    res.json({
+        code: 0,
+        data: messages
     })
 })
 
@@ -70,6 +81,18 @@ Router.get('/:username', async (req, res) => {
         })
     }
 
+})
+
+/**
+ * @param req.params.clientId
+ */
+Router.get('/message/:clientId', async (req, res) => {
+    const messages = await Message.find({ "clientId": req.params.clientId }).sort({ "createdAt": -1 }).limit(100)
+
+    res.json({
+        code: 0,
+        data: messages
+    })
 })
 
 

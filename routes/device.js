@@ -44,6 +44,7 @@ Router.get('/', async (req, res) => {
 Router.post('/bind', async (req, res) => {
     verifyUser(req, res)
 
+    console.log(req.body)
     const device = Device.find({ "clientId": req.body.clientId })
     if (device.length === 0) {
         res.json({
@@ -56,9 +57,9 @@ Router.post('/bind', async (req, res) => {
         "username": req.body.username,
         "clientId": req.body.clientId,
     }, {
-        username: req.body.username,
-        clientId: req.body.clientId,
-        name: req.body.name
+        "username": req.body.username,
+        "clientId": req.body.clientId,
+        "name": req.body.name
     }, { upsert: true })
 
     res.json({

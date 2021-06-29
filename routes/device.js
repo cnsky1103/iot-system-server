@@ -4,13 +4,32 @@ const Device = require('../models/device')
 const User = require('../models/user')
 const User_Device = require('../models/user_device')
 const Message = require('../models/message')
+const jwt = require('jsonwebtoken')
+
+function verifyUser(req, res) {
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+
+    if (!token) {
+        res.sendStatus(401).json({
+            code: 401,
+            error: "未验证的用户！"
+        })
+    }
+
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        if (err) res.sendStatus(403).json({
+            code: 403,
+            error: "用户验证失败！"
+        });
+    })
+}
 
 /**
  * 
  */
 Router.get('/', async (req, res) => {
     const allDevice = await Device.find({})
-
     res.json({
         code: 0,
         data: allDevice
@@ -23,12 +42,7 @@ Router.get('/', async (req, res) => {
  * @param req.body.name
  */
 Router.post('/bind', async (req, res) => {
-    console.log(req.body)
-    const user_device = User_Device({
-        username: req.body.username,
-        clientId: req.body.clientId,
-        name: req.body.name
-    })
+    verifyUser(req, res)
 
     const device = Device.find({ "clientId": req.body.clientId })
     if (device.length === 0) {
@@ -55,7 +69,7 @@ Router.post('/bind', async (req, res) => {
 /**
  * 
  */
- Router.get('/allmessage', async (req, res) => {
+Router.get('/allmessage', async (req, res) => {
     const messages = await Message.find({}).sort({ "createdAt": -1 })
     res.json({
         code: 0,
@@ -67,6 +81,8 @@ Router.post('/bind', async (req, res) => {
  * @param username
  */
 Router.get('/:username', async (req, res) => {
+    verifyUser(req, res)
+
     const users = await User.find({ "username": req.params.username })
     if (users.length === 0) {
         res.json({

@@ -1,7 +1,7 @@
 const express = require('express')
 const Router = express.Router()
 const User = require('../models/user')
-
+const jwt = require('jsonwebtoken')
 
 /**
  * login
@@ -25,7 +25,7 @@ Router.post('/login', async (req, res) => {
         } else {
             res.json({
                 code: 0,
-                data: accounts
+                data: jwt.sign({ username: accounts[0].username }, process.env.ACCESS_TOKEN_SECRET)
             })
         }
     }
@@ -53,7 +53,7 @@ Router.post('/register', async (req, res) => {
                     data: result
                 })
             })
-            .catch(res.json({
+            .catch(err => res.json({
                 code: 1,
                 error: "系统错误"
             }))

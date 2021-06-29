@@ -6,10 +6,6 @@ const deviceSchema = new Schema({
         type: String,
         required: true
     },
-    name: {
-        type: String,
-        default: "client device"
-    },
     lat: {
         type: Number,
         required: true
